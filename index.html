@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gitで盆栽</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="container">
+    <!-- ヘッダー -->
+    <header class="header">
+      <h1>🌳 Gitで盆栽</h1>
+      <p class="subtitle">Gitリポジトリを盆栽として可視化します</p>
+    </header>
+
+    <!-- コントロールパネル -->
+    <div class="control-panel">
+      <button id="select-repo-btn" class="btn-primary">
+        📁 Gitリポジトリを選択
+      </button>
+      <div id="repo-info" class="repo-info" style="display: none;">
+        <span id="repo-name"></span>
+        <span id="commit-count"></span>
+      </div>
+      <div class="controls">
+        <button id="reset-view-btn" class="btn-secondary" disabled>
+          🔄 ビューをリセット
+        </button>
+        <button id="toggle-animation-btn" class="btn-secondary" disabled>
+          ▶️ アニメーション
+        </button>
+        <button id="save-image-btn" class="btn-secondary" disabled>
+          📷 盆栽を撮影
+        </button>
+      </div>
+    </div>
+
+    <!-- メインキャンバス -->
+    <div class="canvas-container">
+      <div id="loading" class="loading" style="display: none;">
+        <div class="spinner"></div>
+        <p>リポジトリを解析中...</p>
+      </div>
+
+      <div id="error" class="error" style="display: none;">
+        <p id="error-message"></p>
+      </div>
+
+      <svg id="bonsai-canvas" width="800" height="800" style="display: none;">
+        <!-- 定義セクション -->
+        <defs>
+          <!-- 幹のグラデーション -->
+          <linearGradient id="trunk-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#A0522D;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#654321;stop-opacity:1" />
+          </linearGradient>
+
+          <!-- 影のフィルター -->
+          <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="2"/>
+            <feOffset dx="2" dy="2" result="offsetblur"/>
+            <feComponentTransfer>
+              <feFuncA type="linear" slope="0.3"/>
+            </feComponentTransfer>
+            <feMerge>
+              <feMergeNode/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+        </defs>
+
+        <!-- ズーム・パン用グループ -->
+        <g id="viewport">
+          <!-- 根 -->
+          <g id="root"></g>
+
+          <!-- 枝（線） -->
+          <g id="branches"></g>
+
+          <!-- 節（マージコミット） -->
+          <g id="nodes"></g>
+
+          <!-- 葉 -->
+          <g id="leaves"></g>
+        </g>
+
+        <!-- ツールチップ -->
+        <g id="tooltip" style="display: none; pointer-events: none;">
+          <rect class="tooltip-bg" x="0" y="0" rx="5" ry="5"/>
+          <text class="tooltip-text" x="10" y="20"></text>
+        </g>
+      </svg>
+
+      <div id="welcome" class="welcome">
+        <div class="welcome-content">
+          <h2>Welcome to Gitで盆栽</h2>
+          <p>Gitリポジトリを選択して、コミット履歴を盆栽として可視化しましょう</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- フッター -->
+    <footer class="footer">
+      <p>操作方法: マウスホイールでズーム | ドラッグでパン | ノードにカーソルを合わせて詳細表示</p>
+      <p>ブランチの先頭コミットとマージ元のコミットが葉になります</p>
+      <p>直近30件のコミットが盆栽になります</p>
+      <p style="margin-top: 10px;">
+        © 2025 <a href="https://x.com/obashun22" target="_blank" rel="noopener noreferrer" style="color: #1DA1F2; text-decoration: none;">@obashun22</a>
+      </p>
+    </footer>
+  </div>
+
+  <!-- 外部ライブラリ（CDN） -->
+  <script src="https://unpkg.com/isomorphic-git@1.25.0"></script>
+  <script src="https://unpkg.com/@isomorphic-git/lightning-fs@4.6.0/dist/lightning-fs.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/seedrandom@3.0.5/seedrandom.min.js"></script>
+
+  <!-- アプリケーションスクリプト -->
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
